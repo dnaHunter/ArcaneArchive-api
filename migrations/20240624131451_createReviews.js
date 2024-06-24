@@ -7,11 +7,23 @@ export function up(knex) {
     table.increments("id").primary();
     table.string("title").notNullable();
     table.string("body").notNullable();
-    table.integer("user_id").notNullable();
-    table.integer("book_id").notNullable();
+    table
+      .integer("user_id")
+      .notNullable()
+      .unsigned()
+      .references("users.id")
+      .onDelete("CASCADE")
+      .onDelete("CASCADE");
+    table
+      .integer("book_id")
+      .notNullable()
+      .unsigned()
+      .references("books.id")
+      .onDelete("CASCADE")
+      .onDelete("CASCADE");
     table.timestamp("created_at").defaultTo(knex.fn.now());
   });
-};
+}
 
 /**
  * @param { import("knex").Knex } knex
@@ -19,4 +31,4 @@ export function up(knex) {
  */
 export function down(knex) {
   return knex.schema.dropTable("reviews");
-};
+}

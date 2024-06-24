@@ -12,10 +12,10 @@ export function up(knex) {
     table.string("CoverImagePath").notNullable();
     table.timestamp("created_at").defaultTo(knex.fn.now());
     table.boolean("locked").defaultTo("false");
-    table.integer("lockedBy_id");
+    table.integer("lockedBy_id").unsigned().references("users.id");
     table.timestamp("lockedUntil");
   });
-};
+}
 
 /**
  * @param { import("knex").Knex } knex
@@ -23,4 +23,4 @@ export function up(knex) {
  */
 export function down(knex) {
   return knex.schema.dropTable("books");
-};
+}
