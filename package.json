@@ -8,7 +8,8 @@
     "dev": "node --watch index.js",
     "migrate": "knex migrate:latest",
     "migrate:down": "knex migrate:down",
-    "migrate:rollback": "knex migrate:rollback"
+    "migrate:rollback": "knex migrate:rollback",
+    "seed": "knex seed:run"
   },
   "author": "",
   "license": "ISC",
