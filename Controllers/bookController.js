@@ -1,7 +1,16 @@
 import express from "express";
 import bookModel from "../Models/bookModel.js";
 
-function getBookList(req, res) {}
+// GET /books/
+async function getBookList(req, res) {
+  const data = await bookModel.getBookList();
+
+  if (!data) {
+    return res.status(500).json({ message: "Internal Server Error" });
+  }
+
+  res.json(data)
+}
 
 function getBookDetails(req, res) {}
 
