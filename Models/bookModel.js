@@ -4,11 +4,12 @@ const knex = initKnex(configuration);
 
 async function getBookList() {
   try {
-    console.log("start");
-    const list = await knex()
-      .select("id", "title", "author", "coverImagePath")
-      .from("books");
-      console.log("end");
+    const list = await knex("books").select(
+      "id",
+      "title",
+      "author",
+      "coverImagePath"
+    );
     return list;
   } catch (error) {
     console.error(error);
