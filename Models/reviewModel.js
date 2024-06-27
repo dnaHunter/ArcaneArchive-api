@@ -6,7 +6,6 @@ async function getBooksReviews(id) {
   try {
     const reviews = await knex("reviews").where("book_id", id);
 
-    console.log(reviews);
     return reviews;
   } catch (error) {
     console.error(error);
