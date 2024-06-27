@@ -29,7 +29,7 @@ async function getBookDetails(id) {
         "locked",
         "lockedUntil"
       )
-      .where("id", id);
+      .where("id", id).first();
     return details;
   } catch (error) {
     console.error(error);

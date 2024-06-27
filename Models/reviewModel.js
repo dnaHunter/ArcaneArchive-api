@@ -1,6 +1,12 @@
 import knex from "knex";
 
-function getBooksReviews() {}
+async function getBooksReviews() {
+  try {
+    const reviews = await knex("reviews");
+  } catch (error) {
+    
+  }
+}
 
 function postReview() {}
 
