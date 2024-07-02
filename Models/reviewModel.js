@@ -4,7 +4,17 @@ const knex = initKnex(configuration);
 
 async function getBooksReviews(id) {
   try {
-    const reviews = await knex("reviews").where("book_id", id);
+    const reviews = await knex("reviews")
+      .select(
+        "reviews.id",
+        "reviews.created_at",
+        "reviews.title",
+        "reviews.body",
+        "reviews.user_id",
+        "users.username"
+      )
+      .leftJoin("users", "users.id", "reviews.user_id")
+      .where("book_id", id);
 
     return reviews;
   } catch (error) {
