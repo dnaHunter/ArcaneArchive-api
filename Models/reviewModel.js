@@ -23,6 +23,18 @@ async function getBooksReviews(id) {
   }
 }
 
-function postReview() {}
+async function postReview(body) {
+  try {
+    const [id] = await knex("reviews").insert(body);
+
+    const newPost = await knex("reviews").where("id", id).first();
+
+    return newPost;
+  } catch (error) {
+    //TODO ADD MORE SPECIFIC ERROR MESSAGE.
+    console.error(error);
+    return false;
+  }
+}
 
 export default { getBooksReviews, postReview };
