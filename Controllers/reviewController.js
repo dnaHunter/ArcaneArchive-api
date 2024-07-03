@@ -5,12 +5,30 @@ async function getBooksReviews(req, res) {
   const data = await reviewModel.getBooksReviews(req.params.bookId);
 
   if (!data) {
-    res.status(500).json({ message: "Internal Server Error" });
+    return res.status(500).json({ message: "Internal Server Error" });
   }
 
   res.json(data);
 }
 
-function postReview(req, res) {}
+async function postReview(req, res) {
+  const body = req.body;
+
+  if (!body.title || !body.body || !body.book_id) {
+    return res
+      .status(400)
+      .json({ message: "A review needs a title, body and bookId" });
+  }
+
+  const newPost = await reviewModel.postReview(body);
+
+  if (!newPost) {
+    return res
+      .status(400)
+      .json("Request encountered an error. Check the request.");
+  }
+
+  res.json(newPost);
+}
 
 export default { getBooksReviews, postReview };
