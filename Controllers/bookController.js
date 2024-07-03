@@ -1,6 +1,4 @@
-import express from "express";
 import bookModel from "../Models/bookModel.js";
-import path from "path";
 import appRootPath from "app-root-path";
 
 // GET /books/
@@ -29,14 +27,15 @@ async function getBookReader(req, res) {
 
   const book = await bookModel.getBookReader(id);
 
-  if (book.error) {
+  if (!book) {
     return res.status(400).json({ message: "Bad Request" });
   }
 
   if (book.locked) {
     return res.json({ locked: true });
   }
-  
+
+  bookModel.lockBook(id, 1, "hour");
   res.sendFile(appRootPath + book.textFilePath);
 }
 

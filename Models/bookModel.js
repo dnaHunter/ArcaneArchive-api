@@ -1,5 +1,6 @@
 import initKnex from "knex";
 import configuration from "../knexfile.js";
+import dayjs from "dayjs";
 const knex = initKnex(configuration);
 
 async function getBookList() {
@@ -42,18 +43,31 @@ async function getBookReader(id) {
   try {
     const book = await knex("books")
       .select("id", "locked", "textFilePath")
-      .where("id", id).first();
+      .where("id", id)
+      .first();
 
     return book;
   } catch (error) {
     console.error(error);
-    return { error };
+    return false;
   }
 }
 
 function postBook() {}
 
-function lockBook() {}
+async function lockBook(id, timeNum, scale) {
+  const now = dayjs();
+  const lockedUntil = now.add(timeNum, scale).format();
+
+  try {
+    const locked = await knex("books")
+      .update({ locked: true, lockedUntil })
+      .where("id", id);
+    return true;
+  } catch (error) {
+    console.error(error);
+  }
+}
 
 function borrowBook() {}
 
