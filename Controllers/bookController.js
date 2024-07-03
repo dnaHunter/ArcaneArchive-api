@@ -1,5 +1,7 @@
 import express from "express";
 import bookModel from "../Models/bookModel.js";
+import path from "path";
+import appRootPath from "app-root-path";
 
 // GET /books/
 async function getBookList(req, res) {
@@ -14,7 +16,6 @@ async function getBookList(req, res) {
 
 async function getBookDetails(req, res) {
   const data = await bookModel.getBookDetails(req.params.id);
-  
 
   if (!data) {
     return res.status(500).json({ message: "Internal Server Error" });
@@ -23,7 +24,21 @@ async function getBookDetails(req, res) {
   res.json(data);
 }
 
-function getBookReader(req, res) {}
+async function getBookReader(req, res) {
+  const id = req.params.id;
+
+  const book = await bookModel.getBookReader(id);
+
+  if (book.error) {
+    return res.status(400).json({ message: "Bad Request" });
+  }
+
+  if (book.locked) {
+    return res.json({ locked: true });
+  }
+  
+  res.sendFile(appRootPath + book.textFilePath);
+}
 
 function postBook(req, res) {}
 

@@ -29,7 +29,8 @@ async function getBookDetails(id) {
         "locked",
         "lockedUntil"
       )
-      .where("id", id).first();
+      .where("id", id)
+      .first();
     return details;
   } catch (error) {
     console.error(error);
@@ -37,7 +38,18 @@ async function getBookDetails(id) {
   }
 }
 
-function getBookReader() {}
+async function getBookReader(id) {
+  try {
+    const book = await knex("books")
+      .select("id", "locked", "textFilePath")
+      .where("id", id).first();
+
+    return book;
+  } catch (error) {
+    console.error(error);
+    return { error };
+  }
+}
 
 function postBook() {}
 
