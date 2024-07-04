@@ -55,26 +55,56 @@ async function getBookReader(id) {
   }
 }
 
+//POST NEW BOOK
 async function postBook(body, files) {
   const coverFile = files.coverFile[0];
   const textFile = files.textFile[0];
 
+  //Write text file to server storage
   const folderName = body.title.replaceAll(" ", "-");
-  const directory = `${appRootPath}/assets/Books/${folderName}/`;
+  const textDirectory = `${appRootPath}/assets/Books/${folderName}/`;
+  const textFilePath = `/assets/Books/${folderName}/${textFile.originalname}`;
 
-  if (!fs.existsSync(directory)) {
-    fs.mkdirSync(directory);
+  if (!fs.existsSync(textDirectory)) {
+    fs.mkdirSync(textDirectory);
   }
 
   fs.writeFile(
-    `${directory}/${textFile.originalname}`,
+    `${textDirectory}/${textFile.originalname}`,
     textFile.buffer,
     (err) => err && console.error(err)
   );
+
+
+  //Write cover to server storage
+  const CoverImagePath = `Covers/${coverFile.originalname}`;
+
+  fs.writeFile(
+    `${appRootPath}/public/${CoverImagePath}`,
+    coverFile.buffer,
+    (err) => err && console.error(err)
+  );
+
+  const book = {
+    title: body.title,
+    blurb: body.blurb,
+    author: body.author,
+    textFilePath,
+    CoverImagePath,
+  };
+
+  try {
+    const [id] = await knex("books").insert(book);
+
+    const response = await knex("books").where("id", id);
+    return response;
+  } catch (error) {
+    console.error(error);
+    return false;
+  }
 }
 
 async function lockBook(id, timeNum, scale) {
-  //console.log("Lock", new Date().toLocaleTimeString());
   const now = dayjs();
   const lockedUntil = now.add(timeNum, scale).format();
 

@@ -50,14 +50,20 @@ async function postBook(req, res) {
     !files.coverFile ||
     !files.textFile
   ) {
-    return res.json({
+    return res.status(400).json({
       message: "A book needs a title, blurb, author, coverFile and textFile.",
     });
   }
 
-  const response = await bookModel.postBook(body, files)
+  //ADD VALIDATION FOR 2 FILES OF THE SAME NAME
 
-  res.status(201).send();
+  const response = await bookModel.postBook(body, files);
+
+  if (!response) {
+    return res.status(404).json({ message: "Bad request" });
+  }
+
+  res.status(201).json(response);
 }
 
 function lockBook(req, res) {}
