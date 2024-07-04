@@ -1,6 +1,8 @@
 import initKnex from "knex";
 import configuration from "../knexfile.js";
 import dayjs from "dayjs";
+import fs from "fs";
+import appRootPath from "app-root-path";
 const knex = initKnex(configuration);
 
 async function getBookList() {
@@ -53,9 +55,26 @@ async function getBookReader(id) {
   }
 }
 
-function postBook() {}
+async function postBook(body, files) {
+  const coverFile = files.coverFile[0];
+  const textFile = files.textFile[0];
+
+  const folderName = body.title.replaceAll(" ", "-");
+  const directory = `${appRootPath}/assets/Books/${folderName}/`;
+
+  if (!fs.existsSync(directory)) {
+    fs.mkdirSync(directory);
+  }
+
+  fs.writeFile(
+    `${directory}/${textFile.originalname}`,
+    textFile.buffer,
+    (err) => err && console.error(err)
+  );
+}
 
 async function lockBook(id, timeNum, scale) {
+  //console.log("Lock", new Date().toLocaleTimeString());
   const now = dayjs();
   const lockedUntil = now.add(timeNum, scale).format();
 
@@ -71,6 +90,21 @@ async function lockBook(id, timeNum, scale) {
 
 function borrowBook() {}
 
+async function lockHeartbeat(id) {
+  const now = dayjs();
+  const lockedUntil = now.add(10, "second").format();
+
+  try {
+    const data = await knex("books")
+      .update({ locked: true, lockedUntil })
+      .where("id", id);
+    return true;
+  } catch (error) {
+    console.error(error);
+    return false;
+  }
+}
+
 export default {
   getBookList,
   getBookDetails,
@@ -78,4 +112,5 @@ export default {
   postBook,
   lockBook,
   borrowBook,
+  lockHeartbeat,
 };

@@ -35,15 +35,46 @@ async function getBookReader(req, res) {
     return res.json({ locked: true });
   }
 
-  bookModel.lockBook(id, 1, "hour");
+  bookModel.lockBook(id, 1, "minute");
   res.sendFile(appRootPath + book.textFilePath);
 }
 
-function postBook(req, res) {}
+async function postBook(req, res) {
+  const body = req.body;
+  const files = req.files;
+
+  if (
+    !body.title ||
+    !body.blurb ||
+    !body.author ||
+    !files.coverFile ||
+    !files.textFile
+  ) {
+    return res.json({
+      message: "A book needs a title, blurb, author, coverFile and textFile.",
+    });
+  }
+
+  const response = await bookModel.postBook(body, files)
+
+  res.status(201).send();
+}
 
 function lockBook(req, res) {}
 
 function borrowBook(req, res) {}
+
+async function lockHeartbeat(req, res) {
+  const id = req.params.id;
+
+  const locked = await bookModel.lockHeartbeat(id);
+
+  if (!locked) {
+    return res.status(404).json({ message: "Invalid book id" });
+  }
+
+  res.status(204).send();
+}
 
 export default {
   getBookList,
@@ -52,4 +83,5 @@ export default {
   postBook,
   lockBook,
   borrowBook,
+  lockHeartbeat,
 };

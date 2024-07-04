@@ -17,13 +17,13 @@ app.use(express.json());
 
 app.use(cors({ origin: process.env.FRONTEND_URL }));
 
-setInterval(unlocker, 120000);
+setInterval(unlocker, 3000);
 
 app.use("/books", bookRoutes);
 app.use("/users", userRoutes);
 app.use("/reviews", reviewRoutes);
 
 app.listen(PORT, () => {
-  unlocker()
+  unlocker();
   console.log(`Listening on ${BACKEND_URL}:${PORT}`);
 });
