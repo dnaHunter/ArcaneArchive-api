@@ -1,6 +1,8 @@
 import initKnex from "knex";
 import bcrypt from "bcrypt";
 import configuration from "../knexfile.js";
+import jwt from "jsonwebtoken";
+
 const knex = initKnex(configuration);
 
 function getUser() {}
@@ -21,14 +23,34 @@ async function postSignUp(username, password) {
 
     const [createdId] = await knex("users").insert(newUser);
     return createdId;
-    
   } catch (error) {
     console.error(error);
     return false;
   }
 }
 
-function postLogin() {}
+async function postLogin(username, password) {
+  try {
+    const user = await knex("users").where({ username: username }).first();
+    if (!user) {
+      console.log(user, "users");
+      return { error: "no user" };
+    }
+
+    const isPasswordCorrect = bcrypt.compareSync(password, user.password);
+    if (!isPasswordCorrect) {
+      return { error: "incorrect password" };
+    }
+
+    const jwtData = { userId: user.id };
+    const token = jwt.sign(jwtData, process.env.JWT_SECRET, {
+      expiresIn: "24h",
+    });
+    return token;
+  } catch (error) {
+    return { error: "500" };
+  }
+}
 
 export default {
   getUser,

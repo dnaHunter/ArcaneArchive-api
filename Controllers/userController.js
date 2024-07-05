@@ -1,5 +1,4 @@
 import express from "express";
-
 import userModel from "../Models/userModel.js";
 
 function getUser(req, res) {}
@@ -20,13 +19,38 @@ async function postSignUp(req, res) {
   const response = await userModel.postSignUp(username, password);
 
   if (!response) {
-    return res.status(500).json({ message: "Internal Server Error."});
+    return res.status(500).json({ message: "Internal Server Error." });
   }
 
   res.status(201).json(response);
 }
 
-function postLogin(req, res) {}
+async function postLogin(req, res) {
+  const { username, password } = req.body;
+
+  if (!password || !username) {
+    return res
+      .status(400)
+      .send("Please enter all required fields: name, address");
+  }
+
+  const response = userModel.postLogin(username, password);
+  if (response.error) {
+    if (response.error === "no user") {
+      return res
+        .status(400)
+        .json({ message: "Incorrect username or password" });
+    } else if (response.error === "incorrect password") {
+      return res
+        .status(400)
+        .json({ message: "Incorrect username or password" });
+    } else if (response.error === "500") {
+      return res.status(500).json({ message: "Internal Server error" });
+    }
+  }
+
+  res.json({ token: response });
+}
 
 export default {
   getUser,

@@ -7,6 +7,6 @@ router.get("/:id");
 router.get("/:id/borrowed-books");
 router.get("/loggedIn");
 router.post("/", userController.postSignUp);
-router.post("/login" );
+router.post("/login", userController.postLogin);
 
 export default router;
