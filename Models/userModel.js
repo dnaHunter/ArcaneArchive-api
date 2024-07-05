@@ -2,6 +2,7 @@ import initKnex from "knex";
 import bcrypt from "bcrypt";
 import configuration from "../knexfile.js";
 import jwt from "jsonwebtoken";
+import "dotenv/config";
 
 const knex = initKnex(configuration);
 
@@ -13,6 +14,13 @@ function getLogged() {}
 
 async function postSignUp(username, password) {
   try {
+    //Checks if there is an existing user with that username
+    const existingUser = await knex("users")
+      .where({ username: username })
+      .first();
+    if (existingUser) {
+      return { error: "Existing User" };
+    }
     const salt = bcrypt.genSaltSync(2);
     const hashedPassword = bcrypt.hashSync(password, salt);
 
@@ -25,7 +33,7 @@ async function postSignUp(username, password) {
     return createdId;
   } catch (error) {
     console.error(error);
-    return false;
+    return { error: "500" };
   }
 }
 
@@ -33,7 +41,6 @@ async function postLogin(username, password) {
   try {
     const user = await knex("users").where({ username: username }).first();
     if (!user) {
-      console.log(user, "users");
       return { error: "no user" };
     }
 
@@ -48,6 +55,7 @@ async function postLogin(username, password) {
     });
     return token;
   } catch (error) {
+    console.error(error);
     return { error: "500" };
   }
 }

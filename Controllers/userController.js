@@ -18,8 +18,14 @@ async function postSignUp(req, res) {
 
   const response = await userModel.postSignUp(username, password);
 
-  if (!response) {
-    return res.status(500).json({ message: "Internal Server Error." });
+  if (response.error) {
+    if (response.error === "500") {
+      return res.status(500).json({ message: "Internal Server Error." });
+    } else if (response.error === "Existing User") {
+      return res
+        .status(400)
+        .json({ message: "Existing user with that username" });
+    }
   }
 
   res.status(201).json(response);
@@ -34,7 +40,8 @@ async function postLogin(req, res) {
       .send("Please enter all required fields: name, address");
   }
 
-  const response = userModel.postLogin(username, password);
+  const response = await userModel.postLogin(username, password);
+  //Checks error responses
   if (response.error) {
     if (response.error === "no user") {
       return res
