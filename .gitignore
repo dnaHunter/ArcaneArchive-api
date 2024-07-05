@@ -1,4 +1,4 @@
 .env
 node_modules
-assets/Books
-public/Covers
+assets/Books/*
+public/Covers/*
