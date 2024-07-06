@@ -1,11 +1,17 @@
 import express from "express";
 import userModel from "../Models/userModel.js";
 
-function getUser(req, res) {}
+async function getUser(req, res) {
+  const user = await userModel.getUser(req.userId);
+
+  if (!user) {
+    return res.status(500).json({ message: "Internal server error" });
+  }
+
+  res.json(user);
+}
 
 function getBorrowedBooks(req, res) {}
-
-function getLogged(req, res) {}
 
 async function postSignUp(req, res) {
   const { username, password } = req.body;
@@ -62,7 +68,6 @@ async function postLogin(req, res) {
 export default {
   getUser,
   getBorrowedBooks,
-  getLogged,
   postSignUp,
   postLogin,
 };

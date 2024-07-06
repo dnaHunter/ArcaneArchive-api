@@ -6,7 +6,11 @@ import "dotenv/config";
 
 const knex = initKnex(configuration);
 
-function getUser() {}
+async function getUser(id) {
+  const user = await knex("user").where({ id: req.userId }).first();
+  delete user.password;
+  return user;
+}
 
 function getBorrowedBooks() {}
 
