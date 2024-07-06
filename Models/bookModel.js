@@ -75,7 +75,6 @@ async function postBook(body, files) {
     (err) => err && console.error(err)
   );
 
-
   //Write cover to server storage
   const CoverImagePath = `Covers/${coverFile.originalname}`;
 
@@ -118,7 +117,25 @@ async function lockBook(id, timeNum, scale) {
   }
 }
 
-function borrowBook() {}
+async function borrowBook(userId, id) {
+  const now = dayjs();
+  const lockedUntil = now.add(7, "day").format();
+  try {
+    const response = await knex("books")
+      .update({ locked: 1, lockedBy_id: userId, lockedUntil })
+      .where({ id: id });
+
+    if (!response) {
+      return { error: "no book" };
+    }
+
+    const borrowedBook = await knex("books").where("id", response).first();
+    return borrowedBook;
+  } catch (error) {
+    console.error(error);
+    return { error: "500" };
+  }
+}
 
 async function lockHeartbeat(id) {
   const now = dayjs();

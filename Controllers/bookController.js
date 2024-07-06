@@ -66,9 +66,22 @@ async function postBook(req, res) {
   res.status(201).json(response);
 }
 
-function lockBook(req, res) {}
+async function borrowBook(req, res) {
+  const userId = req.userId;
+  const id = req.params.id;
 
-function borrowBook(req, res) {}
+  const response = await bookModel.borrowBook(userId, id);
+
+  if (response.error) {
+    if (response.error === "no book") {
+      return res.status(404).json({ message: "There is no book with that id" });
+    }
+    if (response.error === "500") {
+      return res.status(500).json({ message: "Internal server error" });
+    }
+  }
+  res.json(response);
+}
 
 async function lockHeartbeat(req, res) {
   const id = req.params.id;
@@ -87,7 +100,6 @@ export default {
   getBookDetails,
   getBookReader,
   postBook,
-  lockBook,
   borrowBook,
   lockHeartbeat,
 };

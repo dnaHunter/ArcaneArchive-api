@@ -1,6 +1,7 @@
 import express from "express";
 import bookController from "../Controllers/bookController.js";
 import multer from "multer";
+import { auth } from "../middleware/auth.js";
 
 const router = express.Router();
 
@@ -13,7 +14,6 @@ const fields = multer().fields([
   { name: "textFile", maxCount: 1 },
 ]);
 router.post("/", fields, bookController.postBook);
-router.patch("/:id/lock");
-router.patch("/:id/borrow");
+router.patch("/:id/borrow", auth, bookController.borrowBook);
 
 export default router;

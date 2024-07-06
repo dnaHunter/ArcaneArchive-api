@@ -12,7 +12,7 @@ export function auth(req, res, next) {
     req.userId = jwtData.userId;
     next();
   } catch (error) {
-    res.status(401).json({ messgae: "Please Login" });
+    res.status(401).json({ message: "Please Login" });
   }
 }
 
