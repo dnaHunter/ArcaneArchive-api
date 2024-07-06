@@ -7,7 +7,7 @@ import "dotenv/config";
 const knex = initKnex(configuration);
 
 async function getUser(id) {
-  const user = await knex("user").where({ id: req.userId }).first();
+  const user = await knex("users").where({ id: id }).first();
   delete user.password;
   return user;
 }
