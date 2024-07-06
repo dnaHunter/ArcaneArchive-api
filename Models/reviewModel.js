@@ -23,7 +23,12 @@ async function getBooksReviews(id) {
   }
 }
 
-async function postReview(body) {
+async function postReview(body, userId) {
+  if (userId === "Anon") {
+    delete body.user_id;
+  } else{
+    body.user_id = userId;
+  }
   try {
     const [id] = await knex("reviews").insert(body);
 
@@ -31,7 +36,6 @@ async function postReview(body) {
 
     return newPost;
   } catch (error) {
-    //TODO ADD MORE SPECIFIC ERROR MESSAGE.
     console.error(error);
     return false;
   }

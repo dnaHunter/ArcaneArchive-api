@@ -13,6 +13,7 @@ async function getBooksReviews(req, res) {
 
 async function postReview(req, res) {
   const body = req.body;
+  const userId = req.userId;
 
   if (!body.title || !body.body || !body.book_id) {
     return res
@@ -20,7 +21,7 @@ async function postReview(req, res) {
       .json({ message: "A review needs a title, body and bookId" });
   }
 
-  const newPost = await reviewModel.postReview(body);
+  const newPost = await reviewModel.postReview(body, userId);
 
   if (!newPost) {
     return res
