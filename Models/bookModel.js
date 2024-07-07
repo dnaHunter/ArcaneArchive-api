@@ -121,6 +121,13 @@ async function borrowBook(userId, id) {
   const now = dayjs();
   const lockedUntil = now.add(7, "day").format();
   try {
+    const locked = await knex("books")
+      .select("locked", "lockedUntil")
+      .where("id", id).first();
+    if (locked) {
+      return { error: "locked", until: locked.lockedUntil };
+    }
+
     const response = await knex("books")
       .update({ locked: 1, lockedBy_id: userId, lockedUntil })
       .where({ id: id });
@@ -129,7 +136,7 @@ async function borrowBook(userId, id) {
       return { error: "no book" };
     }
 
-    const borrowedBook = await knex("books").where("id", response).first();
+    const borrowedBook = await knex("books").where("id", id).first();
     return borrowedBook;
   } catch (error) {
     console.error(error);

@@ -76,6 +76,11 @@ async function borrowBook(req, res) {
     if (response.error === "no book") {
       return res.status(404).json({ message: "There is no book with that id" });
     }
+    if (response.error === "locked") {
+      return res
+        .status(403)
+        .json({ message: "Locked", until: response.until});
+    }
     if (response.error === "500") {
       return res.status(500).json({ message: "Internal server error" });
     }

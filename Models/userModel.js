@@ -12,9 +12,18 @@ async function getUser(id) {
   return user;
 }
 
-function getBorrowedBooks() {}
+async function getBorrowedBooks(id) {
+  try {
+    const books = await knex("books")
+      .select("id", "title", "author", "CoverImagePath")
+      .where("lockedBy_id", id);
 
-function getLogged() {}
+    return books;
+  } catch (error) {
+    console.error(error);
+    return {error: "500"}
+  }
+}
 
 async function postSignUp(username, password) {
   try {
@@ -67,7 +76,6 @@ async function postLogin(username, password) {
 export default {
   getUser,
   getBorrowedBooks,
-  getLogged,
   postSignUp,
   postLogin,
 };

@@ -11,7 +11,16 @@ async function getUser(req, res) {
   res.json(user);
 }
 
-function getBorrowedBooks(req, res) {}
+async function getBorrowedBooks(req, res) {
+  const id = req.userId;
+
+  const response = await userModel.getBorrowedBooks(id);
+
+  if (response.error === "500") {
+    return res.json({ message: "Internal Server Error" });
+  }
+  res.json(response);
+}
 
 async function postSignUp(req, res) {
   const { username, password } = req.body;
