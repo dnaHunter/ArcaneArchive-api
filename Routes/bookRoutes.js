@@ -14,6 +14,8 @@ const fields = multer().fields([
   { name: "textFile", maxCount: 1 },
 ]);
 router.post("/", fields, bookController.postBook);
-router.patch("/:id/borrow", auth, bookController.borrowBook);
+
+//Issue with axios when sending auth headers in patch request 
+router.get("/:id/borrow", auth, bookController.borrowBook);
 
 export default router;

@@ -30,7 +30,8 @@ async function getBookDetails(id) {
         "coverImagePath",
         "blurb",
         "locked",
-        "lockedUntil"
+        "lockedUntil",
+        "lockedBy_id"
       )
       .where("id", id)
       .first();
@@ -123,8 +124,9 @@ async function borrowBook(userId, id) {
   try {
     const locked = await knex("books")
       .select("locked", "lockedUntil")
-      .where("id", id).first();
-    if (locked) {
+      .where("id", id)
+      .first();
+    if (locked === true) {
       return { error: "locked", until: locked.lockedUntil };
     }
 
