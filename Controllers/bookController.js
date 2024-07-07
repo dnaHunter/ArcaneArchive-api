@@ -24,6 +24,7 @@ async function getBookDetails(req, res) {
 
 async function getBookReader(req, res) {
   const id = req.params.id;
+  const userId = req.userId;
 
   const book = await bookModel.getBookReader(id);
 
@@ -31,11 +32,12 @@ async function getBookReader(req, res) {
     return res.status(400).json({ message: "Bad Request" });
   }
 
-  if (book.locked) {
+  if (book.locked && book.lockedBy_id !==userId) {
+    
     return res.json({ locked: true });
   }
 
-  bookModel.lockBook(id, 1, "minute");
+  bookModel.lockBook(id, 15, "second");
   res.sendFile(appRootPath + book.textFilePath);
 }
 

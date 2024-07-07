@@ -45,7 +45,7 @@ async function getBookDetails(id) {
 async function getBookReader(id) {
   try {
     const book = await knex("books")
-      .select("id", "locked", "textFilePath")
+      .select("id", "locked", "lockedBy_id", "textFilePath")
       .where("id", id)
       .first();
 

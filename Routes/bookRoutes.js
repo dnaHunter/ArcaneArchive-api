@@ -1,13 +1,13 @@
 import express from "express";
 import bookController from "../Controllers/bookController.js";
 import multer from "multer";
-import { auth } from "../middleware/auth.js";
+import { auth, reviewAuth } from "../middleware/auth.js";
 
 const router = express.Router();
 
 router.get("/", bookController.getBookList);
 router.get("/:id", bookController.getBookDetails);
-router.get("/:id/reader", bookController.getBookReader);
+router.get("/:id/reader", reviewAuth, bookController.getBookReader);
 router.patch("/:id/beat", bookController.lockHeartbeat);
 const fields = multer().fields([
   { name: "coverFile", maxCount: 1 },

@@ -20,6 +20,7 @@ export function reviewAuth(req, res, next) {
   if (!req.headers.authorization) {
     req.userId = "Anon";
     next();
+    return;
   }
 
   const token = req.headers.authorization.split(" ")[1];
