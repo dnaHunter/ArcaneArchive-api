@@ -1,6 +1,22 @@
 # Arcane Archive API
 
-This is the server for Arcane Archive using:
+## Installation
+
+- Clone both [this](https://github.com/dnaHunter/ArcaneArchive-api) and the [frontend repository](https://github.com/dnaHunter/ArcaneArchiveFrontend) onto your own systems. Follow the instruction on the read me there to run it.
+
+- Run `npm i` to install dependencies and node modules.
+
+- Create a mysql2 database for this project.
+
+- Create a .env from the sample. Add the database details, change any of the host setting you need to and create a secret for jwt.
+
+- Run `npm run migrate` to create the tables in the database.
+
+- Run `npm run seed` to create mock data in the database;
+
+- Finally run `npm start` to start the server.
+
+## Tech stack
 
 - JavaScript
 - MySQL
@@ -8,6 +24,11 @@ This is the server for Arcane Archive using:
 - Server libraries:
   - knex
   - express
+  - bcrypt
+  - dayjs
+  - jsonwebtoken
+  - multer
+  - dotenv
 
 ### Endpoints
 
@@ -173,7 +194,3 @@ Reveiw endpoints
     "book_id": "1"
   }
   ```
-
-  ### Data
-
-![alt text](</Mockups/CapstoneDB(1)-1.png>)
