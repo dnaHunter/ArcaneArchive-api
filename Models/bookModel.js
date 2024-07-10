@@ -3,6 +3,7 @@ import configuration from "../knexfile.js";
 import dayjs from "dayjs";
 import fs from "fs";
 import appRootPath from "app-root-path";
+
 const knex = initKnex(configuration);
 
 async function getBookList() {
@@ -64,14 +65,14 @@ async function postBook(body, files) {
   //Write text file to server storage
   const folderName = body.title.replaceAll(" ", "-");
   const textDirectory = `${appRootPath}/assets/Books/${folderName}/`;
-  const textFilePath = `/assets/Books/${folderName}/${textFile.originalname}`;
+  const textFilePath = `/assets/Books/${folderName}/${body.title}.md`;
 
   if (!fs.existsSync(textDirectory)) {
     fs.mkdirSync(textDirectory);
   }
 
   fs.writeFile(
-    `${textDirectory}/${textFile.originalname}`,
+    `${textDirectory}/${body.title}.md`,
     textFile.buffer,
     (err) => err && console.error(err)
   );
